@@ -3,19 +3,19 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
-  InternalServerErrorException,
   Post,
 } from '@nestjs/common'
 import { RegisterRequestDto } from './dto/register-request.dto'
+import { IamService } from './iam.service';
 
 @Controller('iam')
 export class IamController {
+  constructor(private readonly iamService: IamService) {}
+
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() body: RegisterRequestDto): Promise<{ ok: boolean }> {
-    // Temporary implementation
-    if (body.email !== 'root@root.com' || body.password !== 'root123456789')
-      throw new InternalServerErrorException('Temporary authentication error')
+    await this.iamService.register(body)
 
     return { ok: true }
   }
