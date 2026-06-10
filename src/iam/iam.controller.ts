@@ -1,12 +1,6 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-} from '@nestjs/common'
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common'
 import { RegisterRequestDto } from './dto/register-request.dto'
-import { IamService } from './iam.service';
+import { IamService } from './iam.service'
 
 @Controller('iam')
 export class IamController {
