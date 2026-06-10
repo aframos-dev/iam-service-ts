@@ -14,7 +14,7 @@ export class IamController {
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() body: RegisterRequestDto): Promise<{ ok: boolean }> {
     // Temporary implementation
-    if (body.email !== 'root@root.com' || body.password !== 'root')
+    if (body.email !== 'root@root.com' || body.password !== 'root123456789')
       throw new InternalServerErrorException('Temporary authentication error')
 
     return { ok: true }
