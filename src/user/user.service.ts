@@ -1,5 +1,5 @@
-import { ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common';
-import { DatabaseService } from '../database/database.service';
+import { ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common'
+import { DatabaseService } from '../database/database.service'
 import { User, Prisma } from '@prisma/client'
 
 @Injectable()
@@ -19,7 +19,7 @@ export class UserService {
           password,
           firstName,
           lastName,
-        }
+        },
       })
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
