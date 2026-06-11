@@ -4,7 +4,7 @@ import { AppService } from './app.service'
 import { ConfigModule } from '@nestjs/config'
 import { envValidation } from './config/env.validation'
 import { IamModule } from './iam/iam.module'
-import { DatabaseModule } from './database/database.module';
+import { DatabaseModule } from './database/database.module'
 
 @Module({
   imports: [
