@@ -66,7 +66,7 @@ export class IamController {
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  logout(@Res({ passthrough: true }) res: Response): Promise<{ ok: boolean }> {
+  logout(@Res({ passthrough: true }) res: Response): { ok: boolean } {
     this.cookieService.clearAuthCookies(res)
     return { ok: true }
   }
