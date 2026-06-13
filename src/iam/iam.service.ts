@@ -12,7 +12,6 @@ export class IamService {
 
   async register(body: RegisterRequestDto): Promise<void> {
     const passwordHash = await this.hashService.hash(body.password)
-
     await this.userService.create(body.email, passwordHash, body.firstName, body.lastName)
   }
 }
