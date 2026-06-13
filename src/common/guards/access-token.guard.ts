@@ -1,26 +1,20 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common'
-import type { Request } from 'express'
+import { RequestWithUser } from './refresh-token.guard'
 import { TokenService } from '../../iam/token.service'
 
-export type RequestWithUser = Request & {
-  user?: {
-    sub: string
-  }
-}
-
 @Injectable()
-export class RefreshTokenGuard implements CanActivate {
+export class AccessTokenGuard implements CanActivate {
   constructor(private readonly tokenService: TokenService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<RequestWithUser>()
-    const cookies = request.cookies as Record<string, string>
+    const cookies = request.cookies as Record<string, string | undefined>
+    const accessToken = cookies.access_token
 
-    const refreshToken = cookies.refresh_token
-    if (!refreshToken) throw new UnauthorizedException('Unauthorized')
+    if (!accessToken) throw new UnauthorizedException('Unauthorized')
 
     try {
-      request.user = await this.tokenService.verifyRefreshToken(refreshToken)
+      request.user = await this.tokenService.verifyAccessToken(accessToken)
       return true
     } catch {
       throw new UnauthorizedException('Unauthorized')

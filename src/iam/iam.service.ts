@@ -4,6 +4,7 @@ import { HashService } from '../common/hash/hash.service'
 import { UserService } from '../user/user.service'
 import { LoginRequestDto } from './dto/login-request.dto'
 import { TokenService } from './token.service'
+import { User } from '@prisma/client'
 
 @Injectable()
 export class IamService {
@@ -37,7 +38,12 @@ export class IamService {
   }> {
     const user = await this.userService.getById(userId)
     if (!user) throw new UnauthorizedException('Unauthorized')
-
     return this.tokenService.generateAuthTokens(user)
+  }
+
+  async me(userId: string): Promise<User> {
+    const user = await this.userService.getById(userId)
+    if (!user) throw new UnauthorizedException('Unauthorized')
+    return user
   }
 }

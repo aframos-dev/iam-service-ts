@@ -1,4 +1,14 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common'
 import { RegisterRequestDto } from './dto/register-request.dto'
 import { IamService } from './iam.service'
 import { LoginRequestDto } from './dto/login-request.dto'
@@ -6,6 +16,8 @@ import type { Response } from 'express'
 import { CookieService } from './cookie.service'
 import type { RequestWithUser } from '../common/guards/refresh-token.guard'
 import { RefreshTokenGuard } from '../common/guards/refresh-token.guard'
+import { AccessTokenGuard } from '../common/guards/access-token.guard'
+import { UserEntity } from './dto/me-response.dto'
 
 @Controller('iam')
 export class IamController {
@@ -42,5 +54,13 @@ export class IamController {
     const { accessToken, refreshToken } = await this.iamService.refresh(req.user!.sub)
     this.cookieService.setAuthCookies(res, accessToken, refreshToken)
     return { ok: true }
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Get('me')
+  @HttpCode(HttpStatus.OK)
+  async me(@Req() req: RequestWithUser): Promise<UserEntity> {
+    const user = await this.iamService.me(req.user!.sub)
+    return new UserEntity(user)
   }
 }
