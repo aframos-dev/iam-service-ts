@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  InternalServerErrorException,
-  Post,
-  Res,
-} from '@nestjs/common'
+import { Body, Controller, HttpCode, HttpStatus, Post, Res } from '@nestjs/common'
 import { RegisterRequestDto } from './dto/register-request.dto'
 import { IamService } from './iam.service'
 import { LoginRequestDto } from './dto/login-request.dto'
@@ -33,14 +25,8 @@ export class IamController {
     @Body() body: LoginRequestDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<{ ok: boolean }> {
-    if (body.email !== 'root@root.com' || body.password !== 'root123456789')
-      throw new InternalServerErrorException('Temporary authentication error')
-
-    const accessToken = 'access-token-example'
-    const refreshToken = 'refresh-token-example'
-
+    const { accessToken, refreshToken } = await this.iamService.login(body)
     this.cookieService.setAuthCookies(res, accessToken, refreshToken)
-
     return { ok: true }
   }
 }
