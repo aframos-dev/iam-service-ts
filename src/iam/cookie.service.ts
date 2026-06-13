@@ -27,4 +27,14 @@ export class CookieService {
       maxAge: this.configService.getOrThrow<number>('JWT_REFRESH_EXPIRES_IN'),
     })
   }
+
+  clearAuthCookies(res: Response) {
+    res.clearCookie('access_token', {
+      path: '/',
+    })
+
+    res.clearCookie('refresh_token', {
+      path: '/iam/refresh',
+    })
+  }
 }

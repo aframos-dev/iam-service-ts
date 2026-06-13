@@ -63,4 +63,11 @@ export class IamController {
     const user = await this.iamService.me(req.user!.sub)
     return new UserEntity(user)
   }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  logout(@Res({ passthrough: true }) res: Response): Promise<{ ok: boolean }> {
+    this.cookieService.clearAuthCookies(res)
+    return { ok: true }
+  }
 }
