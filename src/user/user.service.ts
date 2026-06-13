@@ -39,4 +39,10 @@ export class UserService {
       },
     })
   }
+
+  async getById(id: string): Promise<User | null> {
+    return this.dataBaseService.user.findUnique({
+      where: { id },
+    })
+  }
 }

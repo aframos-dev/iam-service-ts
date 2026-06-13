@@ -28,11 +28,16 @@ export class IamService {
     const isPasswordValid = await this.hashService.compare(body.password, user.password)
     if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials')
 
-    const { accessToken, refreshToken } = await this.tokenService.generateAuthTokens(user)
+    return await this.tokenService.generateAuthTokens(user)
+  }
 
-    return {
-      accessToken,
-      refreshToken,
-    }
+  async refresh(userId: string): Promise<{
+    accessToken: string
+    refreshToken: string
+  }> {
+    const user = await this.userService.getById(userId)
+    if (!user) throw new UnauthorizedException('Unauthorized')
+
+    return this.tokenService.generateAuthTokens(user)
   }
 }
