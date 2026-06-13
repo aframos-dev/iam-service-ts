@@ -3,12 +3,14 @@ import { RegisterRequestDto } from './dto/register-request.dto'
 import { HashService } from '../common/hash/hash.service'
 import { UserService } from '../user/user.service'
 import { LoginRequestDto } from './dto/login-request.dto'
+import { TokenService } from './token.service'
 
 @Injectable()
 export class IamService {
   constructor(
     private readonly hashService: HashService,
     private readonly userService: UserService,
+    private readonly tokenService: TokenService,
   ) {}
 
   async register(body: RegisterRequestDto): Promise<void> {
@@ -21,15 +23,12 @@ export class IamService {
     refreshToken: string
   }> {
     const user = await this.userService.getByEmail(body.email)
-
     if (!user) throw new UnauthorizedException('Invalid credentials')
 
     const isPasswordValid = await this.hashService.compare(body.password, user.password)
-
     if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials')
 
-    const accessToken = 'access-token-example'
-    const refreshToken = 'refresh-token-example'
+    const { accessToken, refreshToken } = await this.tokenService.generateAuthTokens(user)
 
     return {
       accessToken,
