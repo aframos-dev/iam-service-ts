@@ -11,18 +11,14 @@ import { RegisterRequestDto } from './dto/register-request.dto'
 import { IamService } from './iam.service'
 import { LoginRequestDto } from './dto/login-request.dto'
 import type { Response } from 'express'
-import { ConfigService } from '@nestjs/config'
+import { CookieService } from './cookie.service'
 
 @Controller('iam')
 export class IamController {
-  private readonly isProd: boolean
-
   constructor(
     private readonly iamService: IamService,
-    private readonly configService: ConfigService,
-  ) {
-    this.isProd = this.configService.getOrThrow<string>('NODE_ENV') === 'production'
-  }
+    private readonly cookieService: CookieService,
+  ) {}
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
@@ -30,6 +26,7 @@ export class IamController {
     await this.iamService.register(body)
     return { ok: true }
   }
+
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(
@@ -42,21 +39,7 @@ export class IamController {
     const accessToken = 'access-token-example'
     const refreshToken = 'refresh-token-example'
 
-    res.cookie('access_token', accessToken, {
-      httpOnly: true,
-      secure: this.isProd,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: this.configService.getOrThrow<number>('JWT_ACCESS_EXPIRES_IN'),
-    })
-
-    res.cookie('refresh_token', refreshToken, {
-      httpOnly: true,
-      secure: this.isProd,
-      sameSite: 'lax',
-      path: '/iam/refresh',
-      maxAge: this.configService.getOrThrow<number>('JWT_REFRESH_EXPIRES_IN'),
-    })
+    this.cookieService.setAuthCookies(res, accessToken, refreshToken)
 
     return { ok: true }
   }
