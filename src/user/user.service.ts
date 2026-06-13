@@ -31,4 +31,12 @@ export class UserService {
       throw new InternalServerErrorException('Error creating user')
     }
   }
+
+  async getByEmail(email: string): Promise<User | null> {
+    return this.dataBaseService.user.findUnique({
+      where: {
+        email,
+      },
+    })
+  }
 }

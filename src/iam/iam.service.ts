@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { RegisterRequestDto } from './dto/register-request.dto'
 import { HashService } from '../common/hash/hash.service'
 import { UserService } from '../user/user.service'
@@ -20,8 +20,13 @@ export class IamService {
     accessToken: string
     refreshToken: string
   }> {
-    if (body.email !== 'root@root.com' || body.password !== 'root123456789')
-      throw new InternalServerErrorException('Temporary authentication error')
+    const user = await this.userService.getByEmail(body.email)
+
+    if (!user) throw new UnauthorizedException('Invalid credentials')
+
+    const isPasswordValid = await this.hashService.compare(body.password, user.password)
+
+    if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials')
 
     const accessToken = 'access-token-example'
     const refreshToken = 'refresh-token-example'

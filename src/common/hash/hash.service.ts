@@ -7,4 +7,8 @@ export class HashService {
     const saltRounds = 10
     return bcrypt.hash(value, saltRounds)
   }
+
+  async compare(plainValue: string, hashedValue: string): Promise<boolean> {
+    return bcrypt.compare(plainValue, hashedValue)
+  }
 }
