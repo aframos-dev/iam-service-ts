@@ -35,6 +35,9 @@ importers:
       class-validator:
         specifier: ^0.15.1
         version: 0.15.1
+      iam-service-ts:
+        specifier: 'link:'
+        version: 'link:'
       joi:
         specifier: ^18.2.1
         version: 18.2.1

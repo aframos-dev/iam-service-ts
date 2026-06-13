@@ -1,9 +1,17 @@
-import { Body, Controller, HttpCode, HttpStatus, InternalServerErrorException, Post, Res } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  InternalServerErrorException,
+  Post,
+  Res,
+} from '@nestjs/common'
 import { RegisterRequestDto } from './dto/register-request.dto'
 import { IamService } from './iam.service'
 import { LoginRequestDto } from './dto/login-request.dto'
 import type { Response } from 'express'
-import { ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config'
 
 @Controller('iam')
 export class IamController {
@@ -13,8 +21,7 @@ export class IamController {
     private readonly iamService: IamService,
     private readonly configService: ConfigService,
   ) {
-    this.isProd =
-      this.configService.getOrThrow<string>('NODE_ENV') === 'production'
+    this.isProd = this.configService.getOrThrow<string>('NODE_ENV') === 'production'
   }
 
   @Post('register')
